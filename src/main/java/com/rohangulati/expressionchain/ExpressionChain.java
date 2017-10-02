@@ -42,6 +42,7 @@ public final class ExpressionChain<T> {
   @SafeVarargs
   public static <T> ExpressionChain<T> andChains(ExpressionChain<T>... values) {
     Preconditions.checkNotEmpty(values);
+    // no need for a parent operator
     if (values.length == 1) {
       return values[0];
     }
@@ -52,6 +53,7 @@ public final class ExpressionChain<T> {
 
   public static <T> ExpressionChain<T> andChains(Collection<ExpressionChain<T>> values) {
     Preconditions.checkNotEmpty(values);
+    // no need for a parent operator
     if (values.size() == 1) {
       return values.iterator().next();
     }
@@ -84,6 +86,7 @@ public final class ExpressionChain<T> {
 
   public static <T> ExpressionChain<T> orChains(Collection<ExpressionChain<T>> values) {
     Preconditions.checkNotEmpty(values);
+    // no need for a parent operator
     if (values.size() == 1) {
       return values.iterator().next();
     }
@@ -95,6 +98,7 @@ public final class ExpressionChain<T> {
   @SafeVarargs
   public static <T> ExpressionChain<T> orChains(ExpressionChain<T>... values) {
     Preconditions.checkNotEmpty(values);
+    // no need for a parent operator
     if (values.length == 1) {
       return values[0];
     }
@@ -139,6 +143,12 @@ public final class ExpressionChain<T> {
     return this;
   }
 
+  public ExpressionChain<T> and(Optional<T> optional) {
+    Preconditions.checkNotNull(optional);
+    optional.ifPresent(value -> this.operator.and(this, value));
+    return this;
+  }
+
   public ExpressionChain<T> or(T criteria) {
     this.operator.or(this, criteria);
     return this;
@@ -146,6 +156,12 @@ public final class ExpressionChain<T> {
 
   public ExpressionChain<T> or(ExpressionChain<T> chain) {
     this.operator.or(this, chain);
+    return this;
+  }
+
+  public ExpressionChain<T> or(Optional<T> optional) {
+    Preconditions.checkNotNull(optional);
+    optional.ifPresent(value -> this.operator.or(this, value));
     return this;
   }
 
@@ -161,8 +177,8 @@ public final class ExpressionChain<T> {
     return AND == this.operator;
   }
 
-  public T getValue() {
-    return value;
+  public Optional<T> getValue() {
+    return Optional.ofNullable(value);
   }
 
   public List<ExpressionChain<T>> getChain() {
