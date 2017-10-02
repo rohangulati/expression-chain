@@ -108,8 +108,6 @@ public final class ExpressionChain<T> {
     return new ExpressionChain<T>(value);
   }
 
-  private boolean negating;
-
   @Nullable
   private T value;
 
@@ -126,7 +124,6 @@ public final class ExpressionChain<T> {
   }
 
   ExpressionChain(ExpressionChain<T> other) {
-    this.negating = other.negating;
     this.value = other.value;
     this.operator = other.operator;
     this.chain.addAll(other.chain);
@@ -154,10 +151,6 @@ public final class ExpressionChain<T> {
 
   public boolean isOperator() {
     return value == null;
-  }
-
-  public boolean isNot() {
-    return negating;
   }
 
   public boolean isAnd() {
